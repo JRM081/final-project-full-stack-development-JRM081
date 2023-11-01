@@ -7,10 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.greenspot.databinding.FragmentPlantListBinding
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
-private const val TAG = "PlantListFragment"
 class PlantListFragment : Fragment() {
 
     private var _binding: FragmentPlantListBinding? = null
@@ -20,10 +24,6 @@ class PlantListFragment : Fragment() {
         }
 
     private val plantListViewModel: PlantListViewModel by viewModels()
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.d(TAG, "Total plants: ${plantListViewModel.plants.size}")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,15 +31,20 @@ class PlantListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentPlantListBinding.inflate(inflater, container, false)
-
         binding.plantRecyclerView.layoutManager = LinearLayoutManager(context)
-
-        val plants = plantListViewModel.plants
-        val adapter = PlantListAdapter(plants)
-        binding.plantRecyclerView.adapter = adapter
-
         return binding.root
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                val plants = plantListViewModel.loadPlants()
+                binding.plantRecyclerView.adapter =
+                    PlantListAdapter(plants)
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
