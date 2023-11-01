@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Green Spot</string>
+    <string name="plant_title_hint">Enter a title for the crime.</string>
+    <string name="plant_title_label">Title</string>
+    <string name="plant_details_label">Details</string>
+    <string name="plant_place_label">Solved</string>
+</resources>
