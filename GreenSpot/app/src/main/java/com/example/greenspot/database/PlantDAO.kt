@@ -16,7 +16,7 @@ interface PlantDao {
     fun getPlants(): Flow<List<Plant>>
 
     @Query("SELECT * FROM Plant WHERE id=(:id)")
-    fun getPlant(id: UUID): LiveData<Plant>
+    fun getPlant(id: UUID): Plant
 
     @Update
     suspend fun updatePlant(plant: Plant): Long
