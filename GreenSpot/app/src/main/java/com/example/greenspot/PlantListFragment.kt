@@ -1,8 +1,12 @@
 package com.example.greenspot
 
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -10,10 +14,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.greenspot.databinding.FragmentPlantListBinding
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.UUID
 
 class PlantListFragment : Fragment() {
 
@@ -24,6 +32,12 @@ class PlantListFragment : Fragment() {
         }
 
     private val plantListViewModel: PlantListViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,9 +52,15 @@ class PlantListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                val plants = plantListViewModel.loadPlants()
-                binding.plantRecyclerView.adapter =
-                    PlantListAdapter(plants)
+                plantListViewModel.plants.collect { plants ->
+                    binding.plantRecyclerView.adapter =
+                        PlantListAdapter(plants) {plantId ->
+                            findNavController().navigate(
+                                PlantListFragmentDirections.showPlantDetail(plantId)
+
+                            )
+                        }
+                }
             }
         }
     }
@@ -48,6 +68,34 @@ class PlantListFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_plant_list, menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.new_plant -> {
+                showNewPlant()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    private fun showNewPlant() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val newPlant = Plant(
+                id = UUID.randomUUID(),
+                title = "",
+                date = Date(),
+                place = ""
+            )
+            plantListViewModel.addPlant(newPlant)
+            findNavController().navigate(
+                PlantListFragmentDirections.showPlantDetail(newPlant.id)
+            )
+        }
     }
 
 }

@@ -1,39 +1,30 @@
 package com.example.greenspot
 
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Date
-import java.util.UUID
 
 class PlantListViewModel : ViewModel() {
-    val plants = mutableListOf<Plant>()
+    private val plantRepository = PlantRepository.get()
+
+    private val _plants: MutableStateFlow<List<Plant>> = MutableStateFlow(emptyList())
+    val plants: StateFlow<List<Plant>>
+        get() = _plants.asStateFlow()
+
     init {
-        Log.d(TAG, "init starting")
         viewModelScope.launch {
-            Log.d(TAG, "coroutine launched")
-            plants += loadPlants()
-            Log.d(TAG, "Loading crimes finished")
+            plantRepository.getPlants().collect {
+                _plants.value = it
+            }
         }
     }
 
-    suspend fun loadPlants(): List<Plant> {
-        val result = mutableListOf<Plant>()
-        delay(5000)
-        for (i in 0 until 100) {
-            val plant = Plant(
-                id = UUID.randomUUID(),
-                title = "Plant #$i",
-                date = Date(),
-                place = "Location #$i"
-            )
-            result += plant
-        }
-        return result
+    suspend fun addPlant(plant: Plant) {
+        plantRepository.addPlant(plant)
     }
 
 }
