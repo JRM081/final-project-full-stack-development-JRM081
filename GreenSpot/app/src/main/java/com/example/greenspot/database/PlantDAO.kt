@@ -12,15 +12,15 @@ import java.util.UUID
 
 @Dao
 interface PlantDao {
-    @Query("SELECT * FROM Plant")
+    @Query("SELECT * FROM plant")
     fun getPlants(): Flow<List<Plant>>
 
-    @Query("SELECT * FROM Plant WHERE id=(:id)")
-    fun getPlant(id: UUID): Plant
+    @Query("SELECT * FROM plant WHERE id=(:id)")
+    suspend fun getPlant(id: UUID): Plant
 
     @Update
-    suspend fun updatePlant(plant: Plant): Long
+    suspend fun updatePlant(plant: Plant)
 
     @Insert
-    suspend fun addPlant(plant: Plant): Int
+    suspend fun addPlant(plant: Plant)
 }

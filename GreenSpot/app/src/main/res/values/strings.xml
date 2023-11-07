@@ -5,4 +5,17 @@
     <string name="plant_details_label">Details</string>
     <string name="plant_place_label">Location</string>
     <string name="new_plant"> New Plant</string>
+    <string name="plant_place_hint">Enter a location for the plant.</string>
+    <string name="plant_geo_text">Choose Geo Location</string>
+    <string name="plant_share_text">Share Plant</string>
+    <string name="plant_report">%1$s!
+The plant was discovered on %2$s. %3$s, and %4$s
+</string>
+    <string name="plant_report_located">The plant is located at %s</string>
+    <string name="plant_no_located">The plant has no location reported </string>
+    <string name="plant_geo_report">The coordinates are %s </string>
+    <string name="plant_no_geo">No Coordinates provided</string>
+    <string name="plant_report_subject">GreenSpot Plant Report</string>
+    <string name="send_report">Send plant report via</string>
+    <string name="dismiss">dismiss</string>
 </resources>

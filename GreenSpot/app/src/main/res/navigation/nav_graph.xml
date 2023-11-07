@@ -24,14 +24,21 @@
             app:argType="java.util.UUID" />
         <action
             android:id="@+id/select_date"
-            app:destination="@id/datePickerFragment" />
+            app:destination="@id/DatePickerFragment" />
+        <action
+            android:id="@+id/view_photo"
+            app:destination="@id/PictureViewFragment" />
     </fragment>
     <dialog
-        android:id="@+id/datePickerFragment"
+        android:id="@+id/DatePickerFragment"
         android:name="com.example.greenspot.DatePickerFragment"
         android:label="DatePickerFragment" >
         <argument
             android:name="plantDate"
             app:argType="java.util.Date" />
     </dialog>
+    <dialog
+        android:id="@+id/PictureViewFragment"
+        android:name="com.example.greenspot.PictureDialogFragment"
+        android:label="PictureViewFragment" />
 </navigation>

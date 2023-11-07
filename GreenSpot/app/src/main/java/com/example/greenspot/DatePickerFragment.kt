@@ -16,7 +16,6 @@ class DatePickerFragment : DialogFragment() {
     private val args: DatePickerFragmentArgs by navArgs()
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         val dateListener = DatePickerDialog.OnDateSetListener {
                 _: DatePicker, year: Int, month: Int, day: Int ->
             val resultDate = GregorianCalendar(year, month, day).time

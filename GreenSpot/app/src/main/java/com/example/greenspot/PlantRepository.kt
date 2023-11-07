@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.example.greenspot.database.PlantDatabase
+import com.example.greenspot.database.migration_1_2
+import com.example.greenspot.database.migration_2_3
+//import com.example.greenspot.database.migration_2_3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +16,7 @@ import java.util.UUID
 private const val DATABASE_NAME = "plant-database"
 
 class PlantRepository private constructor(context: Context,
-                                               private val coroutineScope: CoroutineScope = GlobalScope
+      private val coroutineScope: CoroutineScope = GlobalScope
 ){
 
     private val database: PlantDatabase = Room
@@ -22,6 +25,7 @@ class PlantRepository private constructor(context: Context,
             PlantDatabase::class.java,
             DATABASE_NAME
         )
+        .addMigrations(migration_1_2, migration_2_3)
         .build()
 
     fun getPlants(): Flow<List<Plant>> = database.plantDao().getPlants()
@@ -31,13 +35,11 @@ class PlantRepository private constructor(context: Context,
         coroutineScope.launch {
             database.plantDao().updatePlant(plant)
         }
-
     }
 
     suspend fun addPlant(plant: Plant) {
         database.plantDao().addPlant(plant)
     }
-
 
     companion object {
         private var INSTANCE: PlantRepository? = null

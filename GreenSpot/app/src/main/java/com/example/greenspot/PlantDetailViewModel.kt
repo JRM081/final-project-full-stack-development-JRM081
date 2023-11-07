@@ -1,5 +1,6 @@
 package com.example.greenspot
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -18,6 +19,7 @@ class PlantDetailViewModel (plantId: UUID): ViewModel() {
     init {
         viewModelScope.launch {
             _plant.value = plantRepository.getPlant(plantId)
+            Log.d("PlantDetailFragment", "Init run with $plantId")
         }
     }
     fun updatePlant(onUpdate: (Plant) -> Plant) {
