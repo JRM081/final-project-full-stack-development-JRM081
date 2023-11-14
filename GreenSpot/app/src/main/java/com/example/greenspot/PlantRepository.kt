@@ -1,7 +1,6 @@
 package com.example.greenspot
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.Room
 import com.example.greenspot.database.PlantDatabase
 import com.example.greenspot.database.migration_1_2
@@ -31,6 +30,11 @@ class PlantRepository private constructor(context: Context,
     fun getPlants(): Flow<List<Plant>> = database.plantDao().getPlants()
     suspend fun getPlant(id: UUID): Plant = database.plantDao().getPlant(id)
 
+    suspend fun deletePlant(plant: Plant){
+        coroutineScope.launch {
+            database.plantDao().deletePlant(plant)
+        }
+    }
     fun updatePlant(plant: Plant) {
         coroutineScope.launch {
             database.plantDao().updatePlant(plant)

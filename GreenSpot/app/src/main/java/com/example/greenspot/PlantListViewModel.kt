@@ -28,4 +28,7 @@ class PlantListViewModel : ViewModel() {
         plantRepository.addPlant(plant)
     }
 
+    suspend fun deletePlant(plant: Plant) {
+        plantRepository.deletePlant(plant)
+    }
 }

@@ -31,7 +31,18 @@ class PlantDetailViewModel (plantId: UUID): ViewModel() {
         super.onCleared()
             plant.value?.let { plantRepository.updatePlant(it) }
     }
+
+    fun deletePlant(onDelete: (Any) -> Unit) {
+        _plant.update { oldPlant ->
+            oldPlant?.let {
+                onDelete
+                null
+            } ?: oldPlant
+        }
+    }
 }
+
+
 
 class PlantDetailViewModelFactory(
     private val plantId: UUID

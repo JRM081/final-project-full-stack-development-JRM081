@@ -1,6 +1,7 @@
 package com.example.greenspot
 
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import java.util.Date
 import java.util.UUID
 
 class PlantListFragment : Fragment() {
+
 
     private var _binding: FragmentPlantListBinding? = null
     private val binding
@@ -74,22 +76,43 @@ class PlantListFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_plant_list, menu)
     }
+
+
+
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.new_plant -> {
                 showNewPlant()
                 true
             }
-            else -> super.onOptionsItemSelected(item)
+            R.id.help -> {
+                showHelp()
+                true
+            }
+                else -> super.onOptionsItemSelected(item)
         }
     }
+
+    private fun showHelp(){
+        viewLifecycleOwner.lifecycleScope.launch {
+            val helpUri = Uri.parse("https://identify.plantnet.org")
+            findNavController().navigate(
+                PlantListFragmentDirections.showHelp(
+                    helpUri
+                )
+            )
+        }
+    }
+
+
     private fun showNewPlant() {
         viewLifecycleOwner.lifecycleScope.launch {
             val newPlant = Plant(
                 id = UUID.randomUUID(),
                 title = "",
                 date = Date(),
-                place = ""
+                place = "",
             )
             plantListViewModel.addPlant(newPlant)
             findNavController().navigate(
@@ -97,5 +120,7 @@ class PlantListFragment : Fragment() {
             )
         }
     }
+
+
 
 }

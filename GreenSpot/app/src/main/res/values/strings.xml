@@ -18,4 +18,8 @@ The plant was discovered on %2$s. %3$s, and %4$s
     <string name="plant_report_subject">GreenSpot Plant Report</string>
     <string name="send_report">Send plant report via</string>
     <string name="dismiss">dismiss</string>
+    <string name="view_photo">View Photo</string>
+    <string name="no_viewer_app_found">No Viewer App was found.</string>
+    <string name="app_help">Help.</string>
+    <string name="plant_delete">Delete plant Record</string>
 </resources>

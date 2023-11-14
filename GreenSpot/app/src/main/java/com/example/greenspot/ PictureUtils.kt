@@ -2,9 +2,10 @@ package com.example.greenspot
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import kotlin.math.roundToInt
 
-fun getScaledBitmap(path: String, destWidth: Int, destHeight: Int): Bitmap {
+fun getScaledBitmap(path: String, destWidth: Int, destHeight: Int): Bitmap? {
 // Read in the dimensions of the image on disk
     val options = BitmapFactory.Options()
     options.inJustDecodeBounds = true
@@ -22,8 +23,16 @@ fun getScaledBitmap(path: String, destWidth: Int, destHeight: Int): Bitmap {
 
     options.inSampleSize = sampleSize
     options.inJustDecodeBounds = false
+    Log.d("Debug", "Received photoFile path for getBitMap: $path")
 // Read in and create final bitmap
-    return BitmapFactory.decodeFile(path, BitmapFactory.Options().apply {
-        inSampleSize = sampleSize
-    })
+
+    try {
+        return BitmapFactory.decodeFile(path, BitmapFactory.Options().apply {
+            inSampleSize = sampleSize
+        })
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+    return null
+
 }

@@ -13,6 +13,9 @@
         <action
             android:id="@+id/show_plant_detail"
             app:destination="@id/plantDetailFragment" />
+        <action
+            android:id="@+id/show_help"
+            app:destination="@id/helpFragment" />
     </fragment>
     <fragment
         android:id="@+id/plantDetailFragment"
@@ -27,7 +30,7 @@
             app:destination="@id/DatePickerFragment" />
         <action
             android:id="@+id/view_photo"
-            app:destination="@id/PictureViewFragment" />
+            app:destination="@id/PictureDialogFragment" />
     </fragment>
     <dialog
         android:id="@+id/DatePickerFragment"
@@ -38,7 +41,18 @@
             app:argType="java.util.Date" />
     </dialog>
     <dialog
-        android:id="@+id/PictureViewFragment"
+        android:id="@+id/PictureDialogFragment"
         android:name="com.example.greenspot.PictureDialogFragment"
-        android:label="PictureViewFragment" />
+        android:label="PictureDialogFragment" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.example.greenspot.HelpPageFragment"
+        android:label="HelpPageFragment"
+        tools:layout="@layout/fragment_help_page">
+        <argument
+            android:name="helpPageUri"
+            app:argType="android.net.Uri" />
+    </fragment>
+
+
 </navigation>

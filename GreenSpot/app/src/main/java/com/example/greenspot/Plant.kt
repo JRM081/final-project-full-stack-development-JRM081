@@ -11,5 +11,6 @@ import java.util.UUID
     val date: Date,
     val place: String,
     val geolocation: String = "",
-    val photoFileName: String? = null
+    val photoFileName: String? = null,
+
 )

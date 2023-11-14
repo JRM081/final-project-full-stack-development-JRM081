@@ -37,11 +37,6 @@ class PlantDetailFragment : Fragment() {
 
     private val args: PlantDetailFragmentArgs by navArgs()
 
-    companion object {
-
-        private const val DIALOG_PHOTO = "DIALOG_PHOTO"
-
-    }
 
     private val plantDetailViewModel: PlantDetailViewModel by viewModels {
         PlantDetailViewModelFactory(args.plantId)
@@ -74,7 +69,7 @@ class PlantDetailFragment : Fragment() {
         return binding.root
     }
 
-    val uniqueTag = "PictureDialogFragment_${System.currentTimeMillis()}"
+    private val uniqueTag = "PictureDialogFragment_${System.currentTimeMillis()}"
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
@@ -124,14 +119,14 @@ class PlantDetailFragment : Fragment() {
             )
             plantCamera.isEnabled = canResolveIntent(captureImageIntent)
 
+
             plantPhoto.setOnClickListener{
                 if (photoName?.isNotBlank() == true) {
                     Log.d("Debug", "photoName contains: $photoName")
                     photoName?.let { it1 ->
-                        PictureDialogFragment.newInstance(
-                            it1
-                        )
-                    }?.show(parentFragmentManager,uniqueTag)
+                        val dialogFragment = PictureDialogFragment.newInstance(it1)
+                        dialogFragment.show(parentFragmentManager, uniqueTag)
+                    }
                 }
             }
         }
@@ -142,11 +137,13 @@ class PlantDetailFragment : Fragment() {
         _binding = null
     }
 
+
     private fun updateUi(plant: Plant) {
         Log.d("PlantDetailFragment", "updateUI called")
         binding.apply {
             if (plantTitle.text.toString() != plant.title) {
                 plantTitle.setText(plant.title)
+
             }
             plantDate.text = plant.date.toString()
             plantDate.setOnClickListener {
@@ -159,26 +156,41 @@ class PlantDetailFragment : Fragment() {
                 plantPlace.setText(plant.place)
             }
 
-            plantShare.setOnClickListener {
-                val reportIntent = Intent(Intent.ACTION_SEND).apply {
-                    type = "text/plain"
-                    putExtra(Intent.EXTRA_TEXT, getPlantReport(plant))
-                    putExtra(
-                        Intent.EXTRA_SUBJECT,
-                        getString(R.string.plant_report_subject)
-                    )
-                }
-                val chooserIntent = Intent.createChooser(
-                    reportIntent,
-                    getString(R.string.send_report)
-                )
-                startActivity(chooserIntent)
+            fun buttonVisibility(v: View) {
+                plantDelete.visibility = View.VISIBLE;
             }
 
-            updatePhoto(plant.photoFileName)
 
+            if (plant.id.toString().isNotBlank()) {
+                buttonVisibility(plantDelete)
+                plantDelete.setOnClickListener {
+                    plantDetailViewModel.deletePlant { oldPlant ->
+                        oldPlant to null
+                    }
+                }
+
+                plantShare.setOnClickListener {
+                    val reportIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, getPlantReport(plant))
+                        putExtra(
+                            Intent.EXTRA_SUBJECT,
+                            getString(R.string.plant_report_subject)
+                        )
+                    }
+                    val chooserIntent = Intent.createChooser(
+                        reportIntent,
+                        getString(R.string.send_report)
+                    )
+                    startActivity(chooserIntent)
+                }
+
+                updatePhoto(plant.photoFileName)
+
+            }
         }
     }
+
 
     private fun getPlantReport(plant: Plant): String {
         val dateString = DateFormat.format(DATE_FORMAT, plant.date).toString()
@@ -229,6 +241,4 @@ class PlantDetailFragment : Fragment() {
             }
         }
     }
-
-
 }
