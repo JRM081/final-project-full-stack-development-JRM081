@@ -36,12 +36,9 @@ private const val DATE_FORMAT = "EEE, MMM, dd"
 class PlantDetailFragment : Fragment() {
 
     private val args: PlantDetailFragmentArgs by navArgs()
-
-
     private val plantDetailViewModel: PlantDetailViewModel by viewModels {
         PlantDetailViewModelFactory(args.plantId)
     }
-
     private var _binding: FragmentPlantDetailBinding? = null
     private val binding
         get() = checkNotNull(_binding) {
@@ -119,6 +116,7 @@ class PlantDetailFragment : Fragment() {
             )
             plantCamera.isEnabled = canResolveIntent(captureImageIntent)
 
+            binding.plantPhoto.doOnLayout { updatePhoto(photoName) }
 
             plantPhoto.setOnClickListener{
                 if (photoName?.isNotBlank() == true) {
@@ -156,6 +154,8 @@ class PlantDetailFragment : Fragment() {
                 plantPlace.setText(plant.place)
             }
 
+            binding.plantPhoto.doOnLayout { updatePhoto(plant.photoFileName) }
+
             fun buttonVisibility(v: View) {
                 plantDelete.visibility = View.VISIBLE;
             }
@@ -186,6 +186,7 @@ class PlantDetailFragment : Fragment() {
                 }
 
                 updatePhoto(plant.photoFileName)
+
 
             }
         }

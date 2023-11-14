@@ -20,6 +20,7 @@ class PlantHolder(
         binding.plantDate.text = plant.date.toString()
         binding.plantPlace.text = plant.place
 
+
         val photoFile = plant.photoFileName?.let {
             File(binding.root.context.applicationContext.filesDir, it)
         }
