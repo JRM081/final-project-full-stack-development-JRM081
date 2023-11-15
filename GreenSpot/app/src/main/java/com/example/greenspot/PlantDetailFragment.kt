@@ -1,6 +1,7 @@
 package com.example.greenspot
 
 
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 
 import androidx.core.content.FileProvider
@@ -118,15 +120,7 @@ class PlantDetailFragment : Fragment() {
 
             binding.plantPhoto.doOnLayout { updatePhoto(photoName) }
 
-            plantPhoto.setOnClickListener{
-                if (photoName?.isNotBlank() == true) {
-                    Log.d("Debug", "photoName contains: $photoName")
-                    photoName?.let { it1 ->
-                        val dialogFragment = PictureDialogFragment.newInstance(it1)
-                        dialogFragment.show(parentFragmentManager, uniqueTag)
-                    }
-                }
-            }
+
         }
     }
 
@@ -139,6 +133,7 @@ class PlantDetailFragment : Fragment() {
     private fun updateUi(plant: Plant) {
         Log.d("PlantDetailFragment", "updateUI called")
         binding.apply {
+            plantDetailViewModel.isFirstTime = false
             if (plantTitle.text.toString() != plant.title) {
                 plantTitle.setText(plant.title)
 
@@ -160,14 +155,13 @@ class PlantDetailFragment : Fragment() {
                 plantDelete.visibility = View.VISIBLE;
             }
 
-
-            if (plant.id.toString().isNotBlank()) {
+            if (!plantDetailViewModel.isFirstTime) {
                 buttonVisibility(plantDelete)
                 plantDelete.setOnClickListener {
-                    plantDetailViewModel.deletePlant { oldPlant ->
-                        oldPlant to null
-                    }
+                    plantDetailViewModel.deletePlant()
+                    onBackPressedCallback.handleOnBackPressed()
                 }
+            }
 
                 plantShare.setOnClickListener {
                     val reportIntent = Intent(Intent.ACTION_SEND).apply {
@@ -185,10 +179,26 @@ class PlantDetailFragment : Fragment() {
                     startActivity(chooserIntent)
                 }
 
+                plantPhoto.setOnClickListener{
+                    if (photoName?.isNotBlank() == true) {
+                        Log.d("Debug", "photoName contains: $photoName")
+                        photoName?.let { it1 ->
+                            val dialogFragment = PictureDialogFragment.newInstance(it1)
+                            dialogFragment.show(parentFragmentManager, uniqueTag)
+                        }
+                    }
+                }
+
                 updatePhoto(plant.photoFileName)
 
 
             }
+        }
+
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            findNavController().navigateUp()
         }
     }
 

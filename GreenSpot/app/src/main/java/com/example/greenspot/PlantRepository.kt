@@ -31,7 +31,7 @@ class PlantRepository private constructor(context: Context,
     fun getPlants(): Flow<List<Plant>> = database.plantDao().getPlants()
     suspend fun getPlant(id: UUID): Plant = database.plantDao().getPlant(id)
 
-    suspend fun deletePlant(plant: Plant){
+    fun deletePlant(plant: Plant){
         coroutineScope.launch {
             database.plantDao().deletePlant(plant)
         }

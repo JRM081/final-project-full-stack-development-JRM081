@@ -16,28 +16,25 @@ class PlantHolder(
     private val binding: ListItemPlantBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(plant: Plant, onPlantClicked: (plantId: UUID) -> Unit) {
+
         binding.plantTitle.text = plant.title
         binding.plantDate.text = plant.date.toString()
-        binding.plantPlace.text = plant.place
 
 
         val photoFile = plant.photoFileName?.let {
             File(binding.root.context.applicationContext.filesDir, it)
         }
-
-        if (photoFile?.exists() == true) {
-            Log.d("debug", "$photoFile in binding")
-            val scaledBitmap = getScaledBitmap(
-                photoFile.path,
-                binding.homePhoto.width,
-                binding.homePhoto.height
-            )
+        binding.plantPlace.text = plant.place
+        binding.homePhoto.doOnLayout { measuredView ->
+            val scaledBitmap = photoFile?.let {
+                getScaledBitmap(
+                    it.path,
+                    measuredView.width,
+                    measuredView.height
+                )
+            }
             binding.homePhoto.setImageBitmap(scaledBitmap)
             binding.homePhoto.tag = photoFile
-            Log.d("debug", "$scaledBitmap was set in binding,  ${photoFile.path}")
-        } else {
-            binding.homePhoto.setImageBitmap(null)
-            Log.d("debug", "scaledBitmap was set to null")
         }
 
         binding.root.setOnClickListener {

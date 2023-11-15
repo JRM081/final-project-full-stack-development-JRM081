@@ -14,6 +14,9 @@ import java.util.UUID
 class PlantDetailViewModel (plantId: UUID): ViewModel() {
     private val plantRepository = PlantRepository.get()
     private val _plant: MutableStateFlow<Plant?> = MutableStateFlow(null)
+    var isFirstTime = true
+
+
     val plant: StateFlow<Plant?> = _plant.asStateFlow()
 
     init {
@@ -22,26 +25,25 @@ class PlantDetailViewModel (plantId: UUID): ViewModel() {
             Log.d("PlantDetailFragment", "Init run with $plantId")
         }
     }
+
+
+
+
     fun updatePlant(onUpdate: (Plant) -> Plant) {
         _plant.update { oldPlant ->
             oldPlant?.let { onUpdate(it) }
         }
     }
+
     override fun onCleared() {
         super.onCleared()
-            plant.value?.let { plantRepository.updatePlant(it) }
+        plant.value?.let { plantRepository.updatePlant(it) }
     }
 
-    fun deletePlant(onDelete: (Any) -> Unit) {
-        _plant.update { oldPlant ->
-            oldPlant?.let {
-                onDelete
-                null
-            } ?: oldPlant
-        }
+    fun deletePlant() {
+        plant.value?.let { plantRepository.deletePlant(it) }
     }
 }
-
 
 
 class PlantDetailViewModelFactory(
