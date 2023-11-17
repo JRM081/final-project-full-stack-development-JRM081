@@ -100,7 +100,6 @@ class PlantDetailFragment : Fragment() {
                 plantDetailViewModel.updatePlant { it.copy(date = newDate) }
             }
 
-
             plantCamera.setOnClickListener {
                     photoName = "IMG_${Date()}.JPG"
                 val photoFile = File(requireContext().applicationContext.filesDir,
@@ -136,8 +135,8 @@ class PlantDetailFragment : Fragment() {
             plantDetailViewModel.isFirstTime = false
             if (plantTitle.text.toString() != plant.title) {
                 plantTitle.setText(plant.title)
-
             }
+
             plantDate.text = plant.date.toString()
             plantDate.setOnClickListener {
                 findNavController().navigate(
@@ -190,7 +189,9 @@ class PlantDetailFragment : Fragment() {
                 }
 
                 updatePhoto(plant.photoFileName)
-
+            if (plantTitle.toString().isBlank()){
+                plantDetailViewModel.deletePlant()
+            }
 
             }
         }
